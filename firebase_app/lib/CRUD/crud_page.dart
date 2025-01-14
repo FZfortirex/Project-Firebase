@@ -10,47 +10,50 @@ class _CrudPageState extends State<CrudPage> {
   final CollectionReference _itemsCollection =
       FirebaseFirestore.instance.collection('items');
 
-  // Fungsi Create
-  Future<void> _createItem(BuildContext context) async {
-    final TextEditingController titleController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
+  // Fungsi untuk menampilkan dialog pilihan makanan
+  Future<void> _showMenuOptions(BuildContext context) async {
+    final List<Map<String, String>> _menuMakanan = [
+      {'title': 'Nasi Goreng', 'description': 'Nasi goreng dengan ayam dan sayuran.'},
+      {'title': 'Mie Goreng', 'description': 'Mie goreng pedas manis.'},
+      {'title': 'Sate Ayam', 'description': 'Sate ayam dengan bumbu kacang.'},
+      {'title': 'Bakso', 'description': 'Bakso daging sapi dengan kuah segar.'},
+      {'title': 'Ayam Bakar', 'description': 'Ayam bakar dengan sambal terasi.'},
+    ];
 
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Create Item'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
-              ),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
-              ),
-            ],
+          title: const Text(
+            'Pilih Menu Makanan',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: SizedBox(
+            height: 300,
+            child: ListView.builder(
+              itemCount: _menuMakanan.length,
+              itemBuilder: (context, index) {
+                final menu = _menuMakanan[index];
+                return ListTile(
+                  title: Text(menu['title']!),
+                  subtitle: Text(menu['description']!),
+                  onTap: () async {
+                    // Tambahkan menu ke Firestore
+                    await _itemsCollection.add({
+                      'title': menu['title'],
+                      'description': menu['description'],
+                      'createdAt': FieldValue.serverTimestamp(),
+                    });
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                if (titleController.text.isNotEmpty &&
-                    descriptionController.text.isNotEmpty) {
-                  await _itemsCollection.add({
-                    'title': titleController.text,
-                    'description': descriptionController.text,
-                    'createdAt': FieldValue.serverTimestamp(),
-                  });
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Save'),
+              child: const Text('Batal'),
             ),
           ],
         );
@@ -59,40 +62,41 @@ class _CrudPageState extends State<CrudPage> {
   }
 
   // Fungsi Update
-  Future<void> _updateItem(BuildContext context, String docId, String title,
-      String description) async {
+  Future<void> _updateItem(
+      BuildContext context, String docId, String currentTitle, String currentDescription) async {
     final TextEditingController titleController =
-        TextEditingController(text: title);
+        TextEditingController(text: currentTitle);
     final TextEditingController descriptionController =
-        TextEditingController(text: description);
+        TextEditingController(text: currentDescription);
 
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Update Item'),
+          title: const Text('Edit Menu Makanan'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: 'Nama Menu'),
               ),
               TextField(
                 controller: descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: 'Deskripsi'),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: const Text('Batal'),
             ),
             TextButton(
               onPressed: () async {
                 if (titleController.text.isNotEmpty &&
                     descriptionController.text.isNotEmpty) {
+                  // Update data ke Firestore
                   await _itemsCollection.doc(docId).update({
                     'title': titleController.text,
                     'description': descriptionController.text,
@@ -100,7 +104,7 @@ class _CrudPageState extends State<CrudPage> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Update'),
+              child: const Text('Simpan'),
             ),
           ],
         );
@@ -108,19 +112,17 @@ class _CrudPageState extends State<CrudPage> {
     );
   }
 
-  // Fungsi Delete
-  Future<void> _deleteItem(String docId) async {
-    await _itemsCollection.doc(docId).delete();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.orange.shade100,
       appBar: AppBar(
-        title: const Text('CRUD Firebase'),
+        title: const Text('Menu Restoran'),
+        backgroundColor: Colors.orange.shade700,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _itemsCollection.orderBy('createdAt', descending: true).snapshots(),
+        stream:
+            _itemsCollection.orderBy('createdAt', descending: true).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -133,7 +135,12 @@ class _CrudPageState extends State<CrudPage> {
           final data = snapshot.data?.docs;
 
           if (data == null || data.isEmpty) {
-            return const Center(child: Text('No items found'));
+            return const Center(
+              child: Text(
+                'Belum ada menu tersedia',
+                style: TextStyle(color: Colors.brown),
+              ),
+            );
           }
 
           return ListView.builder(
@@ -145,9 +152,16 @@ class _CrudPageState extends State<CrudPage> {
               final description = item['description'];
 
               return Card(
+                elevation: 4,
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: ListTile(
-                  title: Text(title),
+                  title: Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   subtitle: Text(description),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -158,7 +172,7 @@ class _CrudPageState extends State<CrudPage> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _deleteItem(docId),
+                        onPressed: () => _itemsCollection.doc(docId).delete(),
                       ),
                     ],
                   ),
@@ -169,7 +183,8 @@ class _CrudPageState extends State<CrudPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _createItem(context),
+        backgroundColor: Colors.orange,
+        onPressed: () => _showMenuOptions(context),
         child: const Icon(Icons.add),
       ),
     );

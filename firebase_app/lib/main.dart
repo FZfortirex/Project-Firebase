@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'CRUD Firebase',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: CrudPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
