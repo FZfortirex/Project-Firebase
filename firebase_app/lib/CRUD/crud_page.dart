@@ -17,7 +17,6 @@ class _CrudPageState extends State<CrudPage> {
     'Ayam Bakar',
   ];
 
-  // Fungsi untuk menampilkan dialog pilihan makanan
   Future<void> _showMenuOptions(BuildContext context) async {
     final TextEditingController tableController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
@@ -27,9 +26,18 @@ class _CrudPageState extends State<CrudPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          backgroundColor: Colors.white.withOpacity(0.95),
           title: const Text(
             'Pilih Menu Makanan',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.orange,
+              fontSize: 24,
+            ),
+            textAlign: TextAlign.center,
           ),
           content: Container(
             width: MediaQuery.of(context).size.width * 0.8,
@@ -39,17 +47,40 @@ class _CrudPageState extends State<CrudPage> {
                 children: [
                   TextField(
                     controller: tableController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Nomor Meja',
+                      labelStyle: TextStyle(color: Colors.orange.shade700),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade200),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade700),
+                      ),
+                      filled: true,
+                      fillColor: Colors.orange.shade50,
                     ),
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 16),
-                  // Dropdown untuk memilih menu
                   DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Pilih Menu',
-                      border: OutlineInputBorder(),
+                      labelStyle: TextStyle(color: Colors.orange.shade700),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade200),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade700),
+                      ),
+                      filled: true,
+                      fillColor: Colors.orange.shade50,
                     ),
                     value: selectedMenu,
                     items: _menuMakanan
@@ -65,11 +96,21 @@ class _CrudPageState extends State<CrudPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  // Form untuk mengisi deskripsi
                   TextField(
                     controller: descriptionController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Deskripsi',
+                      labelStyle: TextStyle(color: Colors.orange.shade700),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade200),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade700),
+                      ),
+                      filled: true,
+                      fillColor: Colors.orange.shade50,
                     ),
                   ),
                 ],
@@ -79,9 +120,18 @@ class _CrudPageState extends State<CrudPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
+              child: Text(
+                'Batal',
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
             ),
-            TextButton(
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange.shade700,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               onPressed: () async {
                 if (tableController.text.isNotEmpty &&
                     descriptionController.text.isNotEmpty &&
@@ -95,7 +145,7 @@ class _CrudPageState extends State<CrudPage> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Simpan'),
+              child: const Text('Simpan', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -103,7 +153,6 @@ class _CrudPageState extends State<CrudPage> {
     );
   }
 
-  // Fungsi untuk update item
   Future<void> _updateItem(
       BuildContext context, String docId, String currentOrder, String currentDescription, String currentTable) async {
     final TextEditingController tableController = TextEditingController(text: currentTable);
@@ -114,7 +163,19 @@ class _CrudPageState extends State<CrudPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Edit Menu Makanan'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          backgroundColor: Colors.white.withOpacity(0.95),
+          title: Text(
+            'Edit Menu Makanan',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.orange.shade700,
+              fontSize: 24,
+            ),
+            textAlign: TextAlign.center,
+          ),
           content: Container(
             width: MediaQuery.of(context).size.width * 0.8,
             child: SingleChildScrollView(
@@ -123,15 +184,40 @@ class _CrudPageState extends State<CrudPage> {
                 children: [
                   TextField(
                     controller: tableController,
-                    decoration: const InputDecoration(labelText: 'Nomor Meja'),
+                    decoration: InputDecoration(
+                      labelText: 'Nomor Meja',
+                      labelStyle: TextStyle(color: Colors.orange.shade700),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade200),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade700),
+                      ),
+                      filled: true,
+                      fillColor: Colors.orange.shade50,
+                    ),
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 16),
-                  // Dropdown untuk memilih menu (memiliki nilai default)
                   DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Pilih Menu',
-                      border: OutlineInputBorder(),
+                      labelStyle: TextStyle(color: Colors.orange.shade700),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade200),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade700),
+                      ),
+                      filled: true,
+                      fillColor: Colors.orange.shade50,
                     ),
                     value: selectedMenu,
                     items: _menuMakanan
@@ -147,10 +233,22 @@ class _CrudPageState extends State<CrudPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  // Form untuk mengisi deskripsi
                   TextField(
                     controller: descriptionController,
-                    decoration: const InputDecoration(labelText: 'Deskripsi'),
+                    decoration: InputDecoration(
+                      labelText: 'Deskripsi',
+                      labelStyle: TextStyle(color: Colors.orange.shade700),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade200),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.orange.shade700),
+                      ),
+                      filled: true,
+                      fillColor: Colors.orange.shade50,
+                    ),
                   ),
                 ],
               ),
@@ -159,9 +257,18 @@ class _CrudPageState extends State<CrudPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
+              child: Text(
+                'Batal',
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
             ),
-            TextButton(
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange.shade700,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               onPressed: () async {
                 if (selectedMenu != null &&
                     tableController.text.isNotEmpty &&
@@ -174,7 +281,7 @@ class _CrudPageState extends State<CrudPage> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Simpan'),
+              child: const Text('Simpan', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -185,30 +292,52 @@ class _CrudPageState extends State<CrudPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange.shade100,
+      backgroundColor: Colors.orange.shade50,
       appBar: AppBar(
-        title: const Text('Menu Restoran'),
+        title: const Text(
+          'Menu Restoran',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.orange.shade700,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream:
             _itemsCollection.orderBy('createdAt', descending: true).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange.shade700),
+              ),
+            );
           }
 
           if (snapshot.hasError) {
-            return const Center(child: Text('Error fetching data'));
+            return Center(
+              child: Text(
+                'Error fetching data',
+                style: TextStyle(color: Colors.red.shade700),
+              ),
+            );
           }
 
           final data = snapshot.data?.docs;
 
           if (data == null || data.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'Belum ada menu tersedia',
-                style: TextStyle(color: Colors.brown),
+                style: TextStyle(
+                  color: Colors.orange.shade700,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             );
           }
@@ -216,6 +345,7 @@ class _CrudPageState extends State<CrudPage> {
           return Container(
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
+              padding: const EdgeInsets.all(16),
               itemCount: data.length,
               itemBuilder: (context, index) {
                 final item = data[index];
@@ -226,31 +356,58 @@ class _CrudPageState extends State<CrudPage> {
 
                 return Card(
                   elevation: 4,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  margin: const EdgeInsets.only(bottom: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: ListTile(
-                    title: Text(
-                      order,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white,
+                          Colors.orange.shade50,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    subtitle: Text('$description\nMeja: $table'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => _updateItem(
-                              context, docId, order, description, table),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16),
+                      title: Text(
+                        order,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.orange.shade900,
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () {
-                            _itemsCollection.doc(docId).delete();
-                          },
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          '$description\nMeja: $table',
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            height: 1.5,
+                          ),
                         ),
-                      ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit, color: Colors.blue.shade700),
+                            onPressed: () => _updateItem(
+                                context, docId, order, description, table),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red.shade700),
+                            onPressed: () {
+                              _itemsCollection.doc(docId).delete();
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -259,10 +416,11 @@ class _CrudPageState extends State<CrudPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.orange,
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.orange.shade700,
         onPressed: () => _showMenuOptions(context),
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Tambah Menu'),
       ),
     );
   }
