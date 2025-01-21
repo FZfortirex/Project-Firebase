@@ -65,27 +65,28 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFEF4E8),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment
-              .spaceBetween, // Menyusun widget di bagian atas dan bawah
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 100,
+                  Image.network(
+                    'https://static.vecteezy.com/system/resources/previews/004/949/443/original/joglo-javanese-traditional-house-in-white-background-template-logo-design-free-vector.jpg',
+                    width: 200,
+                    height: 200,
                   ),
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40)),
                     ),
                     keyboardType: TextInputType.emailAddress,
                   ),
@@ -94,57 +95,73 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _passwordController,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
                     ),
                     obscureText: true,
                   ),
-                  SizedBox(height: 20),
-                  OutlinedButton(
+                  SizedBox(height: 40),
+                  ElevatedButton(
                     onPressed: () => _handleEmailSignIn(context),
-                    child: Text(
-                      'Sign in with Email',
-                      style: TextStyle(color: Colors.black), // Warna teks
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 231, 142),
-                      side: BorderSide(
-                          color: Colors.black, width: 2), // Garis tepi tombol
+                    child: Text('Sign In'),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: const Color.fromARGB(244, 251, 52, 52),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(40),
                       ),
                       padding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      fixedSize: Size(250, 50), // Ukuran tombol
+                      fixedSize: Size(250, 50),
                     ),
                   ),
                   SizedBox(
-                    height: 13,
+                    height: 25,
                   ),
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: const Color.fromARGB(255, 49, 49, 49),
+                          height: 1,
+                          thickness: 0.2,
+                        ),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      fixedSize:
-                          Size(250, 50), // Ukuran tombol yang sama dengan Email
-                    ),
-                    label: Text(
-                      'Sign in with Google',
-                      style: TextStyle(fontSize: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text("OR"),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: const Color.fromARGB(255, 49, 49, 49),
+                          height: 1,
+                          thickness: 0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(20),
                     ),
                     onPressed: () => _handleGoogleSignIn(context),
+                    child: ClipOval(
+                      child: Image.network(
+                        'https://www.pngall.com/wp-content/uploads/13/Google-Logo.png',
+                        width: 20,
+                        height: 20,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-            Column(
-              children: [
-                SizedBox(height: 20),
-              ],
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
@@ -155,7 +172,15 @@ class _LoginPageState extends State<LoginPage> {
                     MaterialPageRoute(builder: (context) => SignUpPage()),
                   );
                 },
-                child: Text('Don\'t have an account? Sign Up'),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color.fromARGB(255, 0, 0, 0),
+                ),
+                child: Text(
+                  'Don\'t have an account? Sign Up',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
               ),
             ),
           ],
