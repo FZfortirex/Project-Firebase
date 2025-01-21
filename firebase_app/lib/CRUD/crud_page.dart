@@ -16,7 +16,8 @@ class _CrudPageState extends State<CrudPage> {
     await _ordersCollection.doc(docId).delete();
   }
 
-  Future<void> _showDeleteConfirmation(BuildContext context, String docId) async {
+  Future<void> _showDeleteConfirmation(
+      BuildContext context, String docId) async {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -77,11 +78,13 @@ class _CrudPageState extends State<CrudPage> {
                           labelStyle: TextStyle(color: Colors.orange.shade700),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(color: Colors.orange.shade200),
+                            borderSide:
+                                BorderSide(color: Colors.orange.shade200),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(color: Colors.orange.shade700),
+                            borderSide:
+                                BorderSide(color: Colors.orange.shade700),
                           ),
                           filled: true,
                           fillColor: Colors.orange.shade50,
@@ -96,11 +99,13 @@ class _CrudPageState extends State<CrudPage> {
                           labelStyle: TextStyle(color: Colors.orange.shade700),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(color: Colors.orange.shade200),
+                            borderSide:
+                                BorderSide(color: Colors.orange.shade200),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(color: Colors.orange.shade700),
+                            borderSide:
+                                BorderSide(color: Colors.orange.shade700),
                           ),
                           filled: true,
                           fillColor: Colors.orange.shade50,
@@ -114,11 +119,13 @@ class _CrudPageState extends State<CrudPage> {
                           labelStyle: TextStyle(color: Colors.orange.shade700),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(color: Colors.orange.shade200),
+                            borderSide:
+                                BorderSide(color: Colors.orange.shade200),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide(color: Colors.orange.shade700),
+                            borderSide:
+                                BorderSide(color: Colors.orange.shade700),
                           ),
                           filled: true,
                           fillColor: Colors.orange.shade50,
@@ -171,7 +178,8 @@ class _CrudPageState extends State<CrudPage> {
                                       ),
                                     ),
                                     IconButton(
-                                      icon: Icon(Icons.delete, color: Colors.red.shade700),
+                                      icon: Icon(Icons.delete,
+                                          color: Colors.red.shade700),
                                       onPressed: () {
                                         setState(() {
                                           selectedMenuList.remove(item);
@@ -219,7 +227,8 @@ class _CrudPageState extends State<CrudPage> {
                       Navigator.pop(context);
                     }
                   },
-                  child: const Text('Simpan', style: TextStyle(color: Colors.white)),
+                  child: const Text('Simpan',
+                      style: TextStyle(color: Colors.white)),
                 ),
               ],
             );
@@ -247,12 +256,15 @@ class _CrudPageState extends State<CrudPage> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _ordersCollection.orderBy('createdAt', descending: true).snapshots(),
+        stream: _ordersCollection
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange.shade700),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(Colors.orange.shade700),
               ),
             );
           }
@@ -323,13 +335,14 @@ class _CrudPageState extends State<CrudPage> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: menuList
-                            .map((menuItem) =>
-                                Text('${menuItem['menu'].join(", ")} - ${menuItem['description']}'))
+                            .map((menuItem) => Text(
+                                '${menuItem['menu']} - ${menuItem['description']}'))
                             .toList(),
                       ),
                       trailing: IconButton(
                         icon: Icon(Icons.delete, color: Colors.red.shade700),
-                        onPressed: () => _showDeleteConfirmation(context, docId),
+                        onPressed: () =>
+                            _showDeleteConfirmation(context, docId),
                       ),
                     ),
                   ),
@@ -343,7 +356,9 @@ class _CrudPageState extends State<CrudPage> {
         backgroundColor: Colors.orange.shade700,
         onPressed: () => _showMenuOptions(context),
         icon: const Icon(Icons.add),
-        label: const Text('Tambah Menu',),
+        label: const Text(
+          'Tambah Menu',
+        ),
       ),
     );
   }

@@ -1,5 +1,4 @@
-
-import 'package:firebase_app/login_page.dart';
+import 'package:firebase_app/login/login_page.dart';
 import 'package:firebase_app/CRUD/crud_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -28,10 +27,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       title: 'CRUD Firebase',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: CrudPage(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
