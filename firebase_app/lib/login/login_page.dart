@@ -1,8 +1,7 @@
 import 'package:firebase_app/CRUD/crud_page.dart';
 import 'package:firebase_app/login/sign_up_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'google_sign_in_service.dart';
+import 'auth_sign_in_up_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,10 +13,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void _handleGoogleSignIn(BuildContext context) async {
-    final user = await GoogleSignInService.signInWithGoogle();
+    final user = await AuthSignInUpService.signInWithGoogle();
 
     if (user != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -36,17 +34,14 @@ class _LoginPageState extends State<LoginPage> {
 
   void _handleEmailSignIn(BuildContext context) async {
     try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      final user = await AuthSignInUpService.signInWithEmail(
+        _emailController.text,
+        _passwordController.text,
       );
-
-      final User? user = userCredential.user;
 
       if (user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Welcome, ${user.displayName ?? user.email}')),
+          SnackBar(content: Text('Welcome, ${user.email}')),
         );
         Navigator.pushReplacement(
           context,

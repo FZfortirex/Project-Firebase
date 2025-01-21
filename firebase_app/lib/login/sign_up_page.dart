@@ -1,5 +1,5 @@
 import 'package:firebase_app/CRUD/crud_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_app/login/auth_sign_in_up_service.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -12,21 +12,17 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void _handleSignUp(BuildContext context) async {
     try {
-      final UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      final user = await AuthSignInUpService.signUpWithEmail(
+        _emailController.text,
+        _passwordController.text,
       );
-
-      final User? user = userCredential.user;
 
       if (user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Welcome, ${user.displayName ?? user.email}')),
+          SnackBar(content: Text('Welcome, ${user.email}')),
         );
         Navigator.pushReplacement(
           context,
@@ -34,7 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign-Up Gagal')),
+          const SnackBar(content: Text('Sign-In Gagal')),
         );
       }
     } catch (e) {
@@ -95,7 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(height: 20),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context); // Kembali ke LoginPage
+                  Navigator.pop(context);
                 },
                 child: Text('Already have an account? Sign in'),
               ),
