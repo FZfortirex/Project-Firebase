@@ -16,7 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Fungsi untuk Sign-In menggunakan Google
   void _handleGoogleSignIn(BuildContext context) async {
     final user = await GoogleSignInService.signInWithGoogle();
 
@@ -35,7 +34,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // Fungsi untuk Sign-In dengan email dan password
   void _handleEmailSignIn(BuildContext context) async {
     try {
       final UserCredential userCredential =
@@ -69,20 +67,26 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Login with Email Section
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
+                  Image.network(
+                    'https://static.vecteezy.com/system/resources/previews/004/949/443/original/joglo-javanese-traditional-house-in-white-background-template-logo-design-free-vector.jpg',
+                    width: 200,
+                    height: 200,
+                  ),
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40)),
                     ),
                     keyboardType: TextInputType.emailAddress,
                   ),
@@ -91,61 +95,93 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _passwordController,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
                     ),
                     obscureText: true,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: () => _handleEmailSignIn(context),
-                    child: Text('Sign in with Email'),
+                    child: Text('Sign In'),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue,
+                      backgroundColor: const Color.fromARGB(244, 251, 52, 52),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      fixedSize: Size(250, 50),
                     ),
                   ),
-                  // Sign-Up Button
-                  SizedBox(height: 10),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                SignUpPage()), // Pindah ke halaman SignUp
-                      );
-                    },
-                    child: Text('Don\'t have an account? Sign Up'),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: const Color.fromARGB(255, 49, 49, 49),
+                          height: 1,
+                          thickness: 0.2,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text("OR"),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: const Color.fromARGB(255, 49, 49, 49),
+                          height: 1,
+                          thickness: 0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(20),
+                    ),
+                    onPressed: () => _handleGoogleSignIn(context),
+                    child: ClipOval(
+                      child: Image.network(
+                        'https://www.pngall.com/wp-content/uploads/13/Google-Logo.png',
+                        width: 20,
+                        height: 20,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 30),
-
-            // Google Sign-In Button
-            Text(
-              'Masuk Menggunakan Google : ',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w300,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignUpPage()),
+                  );
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color.fromARGB(255, 0, 0, 0),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                child: Text(
+                  'Don\'t have an account? Sign Up',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
               ),
-              label: Text(
-                'Sign in with Google',
-                style: TextStyle(fontSize: 16),
-              ),
-              onPressed: () => _handleGoogleSignIn(context),
             ),
           ],
         ),

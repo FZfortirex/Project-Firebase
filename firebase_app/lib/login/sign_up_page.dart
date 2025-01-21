@@ -47,6 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Sign Up'),
       ),
@@ -60,7 +61,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
                 ),
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -69,17 +72,24 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () => _handleSignUp(context),
-                child: Text('Sign Up'),
+                child: Text('Sign In'),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Colors.green,
+                  backgroundColor: const Color.fromARGB(244, 251, 52, 52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  fixedSize: Size(250, 50),
                 ),
               ),
               SizedBox(height: 20),
