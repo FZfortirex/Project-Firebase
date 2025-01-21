@@ -12,10 +12,12 @@ class _CrudPageState extends State<CrudPage> {
   final TextEditingController _menuController = TextEditingController();
   List<Map<String, dynamic>> selectedMenuList = [];
 
+  // Function to delete an order
   Future<void> _deleteOrder(String docId) async {
     await _ordersCollection.doc(docId).delete();
   }
 
+  // Function to show delete confirmation dialog
   Future<void> _showDeleteConfirmation(
       BuildContext context, String docId) async {
     return showDialog(
@@ -42,9 +44,16 @@ class _CrudPageState extends State<CrudPage> {
     );
   }
 
-  Future<void> _showMenuOptions(BuildContext context) async {
+  // Function to show the menu options (add/edit menu)
+  Future<void> _showMenuOptions(
+      BuildContext context, {Map<String, dynamic>? menuToEdit, int? index}) async {
     final TextEditingController tableController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
+
+    if (menuToEdit != null) {
+      _menuController.text = menuToEdit['menu'];
+      descriptionController.text = menuToEdit['description'];
+    }
 
     await showDialog(
       context: context,
@@ -60,7 +69,7 @@ class _CrudPageState extends State<CrudPage> {
                 'Pilih Menu Makanan',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.orange,
+                  color: Color.fromARGB(255, 255, 67, 54),
                   fontSize: 24,
                 ),
                 textAlign: TextAlign.center,
@@ -75,19 +84,19 @@ class _CrudPageState extends State<CrudPage> {
                         controller: tableController,
                         decoration: InputDecoration(
                           labelText: 'Meja',
-                          labelStyle: TextStyle(color: Colors.orange.shade700),
+                          labelStyle: TextStyle(color: Colors.red.shade700),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide:
-                                BorderSide(color: Colors.orange.shade200),
+                                BorderSide(color: Colors.red.shade400),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide:
-                                BorderSide(color: Colors.orange.shade700),
+                                BorderSide(color: Colors.red.shade700),
                           ),
                           filled: true,
-                          fillColor: Colors.orange.shade50,
+                          fillColor: Colors.red.shade50,
                         ),
                         keyboardType: TextInputType.number,
                       ),
@@ -96,19 +105,19 @@ class _CrudPageState extends State<CrudPage> {
                         controller: _menuController,
                         decoration: InputDecoration(
                           labelText: 'Menu',
-                          labelStyle: TextStyle(color: Colors.orange.shade700),
+                          labelStyle: TextStyle(color: Colors.red.shade700),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide:
-                                BorderSide(color: Colors.orange.shade200),
+                                BorderSide(color: Colors.red.shade200),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide:
-                                BorderSide(color: Colors.orange.shade700),
+                                BorderSide(color: Colors.red.shade700),
                           ),
                           filled: true,
-                          fillColor: Colors.orange.shade50,
+                          fillColor: Colors.red.shade50,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -116,19 +125,19 @@ class _CrudPageState extends State<CrudPage> {
                         controller: descriptionController,
                         decoration: InputDecoration(
                           labelText: 'Deskripsi',
-                          labelStyle: TextStyle(color: Colors.orange.shade700),
+                          labelStyle: TextStyle(color: Colors.red.shade700),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide:
-                                BorderSide(color: Colors.orange.shade200),
+                                BorderSide(color: Colors.red.shade200),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                             borderSide:
-                                BorderSide(color: Colors.orange.shade700),
+                                BorderSide(color: Colors.red.shade700),
                           ),
                           filled: true,
-                          fillColor: Colors.orange.shade50,
+                          fillColor: Colors.red.shade50,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -137,26 +146,36 @@ class _CrudPageState extends State<CrudPage> {
                           if (_menuController.text.isNotEmpty &&
                               descriptionController.text.isNotEmpty) {
                             setState(() {
-                              selectedMenuList.add({
-                                'menu': _menuController.text,
-                                'description': descriptionController.text,
-                              });
+                              if (menuToEdit == null) {
+                                selectedMenuList.add({
+                                  'menu': _menuController.text,
+                                  'description': descriptionController.text,
+                                });
+                              } else {
+                                selectedMenuList[index!] = {
+                                  'menu': _menuController.text,
+                                  'description': descriptionController.text,
+                                };
+                              }
                               _menuController.clear();
                               descriptionController.clear();
                             });
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange.shade700,
+                          backgroundColor: Colors.red.shade700,
                         ),
-                        child: const Text('Tambahkan Menu'),
+                        child: Text(
+                          menuToEdit == null ? 'Tambahkan Menu' : 'Perbarui Menu',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         'Menus yang dipilih:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.orange.shade700,
+                          color: Colors.red.shade700,
                         ),
                       ),
                       Container(
@@ -186,6 +205,17 @@ class _CrudPageState extends State<CrudPage> {
                                         });
                                       },
                                     ),
+                                    IconButton(
+                                      icon: Icon(Icons.edit,
+                                          color: Colors.red.shade700),
+                                      onPressed: () {
+                                        _showMenuOptions(
+                                          context,
+                                          menuToEdit: item,
+                                          index: selectedMenuList.indexOf(item),
+                                        );
+                                      },
+                                    ),
                                   ],
                                 ),
                               );
@@ -207,7 +237,7 @@ class _CrudPageState extends State<CrudPage> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange.shade700,
+                    backgroundColor: Colors.red.shade700,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -241,13 +271,13 @@ class _CrudPageState extends State<CrudPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange.shade50,
+      backgroundColor: Colors.red.shade50,
       appBar: AppBar(
         title: const Text(
           'Menu Restoran',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.orange.shade700,
+        backgroundColor: Colors.red.shade700,
         elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -264,7 +294,7 @@ class _CrudPageState extends State<CrudPage> {
             return Center(
               child: CircularProgressIndicator(
                 valueColor:
-                    AlwaysStoppedAnimation<Color>(Colors.orange.shade700),
+                    AlwaysStoppedAnimation<Color>(Colors.red.shade700),
               ),
             );
           }
@@ -285,7 +315,7 @@ class _CrudPageState extends State<CrudPage> {
               child: Text(
                 'Belum ada menu tersedia',
                 style: TextStyle(
-                  color: Colors.orange.shade700,
+                  color: Colors.red.shade700,
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                 ),
@@ -315,7 +345,7 @@ class _CrudPageState extends State<CrudPage> {
                       gradient: LinearGradient(
                         colors: [
                           Colors.white,
-                          Colors.orange.shade50,
+                          Colors.red.shade50,
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -329,7 +359,7 @@ class _CrudPageState extends State<CrudPage> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
-                          color: Colors.orange.shade900,
+                          color: Colors.red.shade900,
                         ),
                       ),
                       subtitle: Column(
@@ -353,11 +383,12 @@ class _CrudPageState extends State<CrudPage> {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.orange.shade700,
+        backgroundColor: Colors.white,
         onPressed: () => _showMenuOptions(context),
-        icon: const Icon(Icons.add),
-        label: const Text(
+        icon: Icon(Icons.add, color: Colors.red.shade700),
+        label: Text(
           'Tambah Menu',
+          style: TextStyle(color: Colors.red.shade700),
         ),
       ),
     );
