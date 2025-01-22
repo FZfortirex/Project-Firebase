@@ -1,6 +1,7 @@
 import 'package:firebase_app/CRUD/crud_page.dart';
 import 'package:firebase_app/login/sign_up_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Import GetX
 import 'auth_sign_in_up_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,10 +22,8 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Welcome, ${user.displayName}')),
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => CrudPage()),
-      );
+      // Navigasi ke CrudPage dan hapus semua halaman sebelumnya
+      Get.offAll(() => CrudPage());
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Sign-In Gagal')),
@@ -43,10 +42,8 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Welcome, ${user.email}')),
         );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => CrudPage()),
-        );
+        // Navigasi ke CrudPage dan hapus semua halaman sebelumnya
+        Get.offAll(() => CrudPage());
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Sign-In Gagal')),
@@ -162,10 +159,8 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.only(bottom: 20.0),
               child: TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()),
-                  );
+                  // Navigasi ke SignUpPage
+                  Get.to(SignUpPage());
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: const Color.fromARGB(255, 0, 0, 0),

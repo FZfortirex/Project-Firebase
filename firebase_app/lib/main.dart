@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: CrudPage(),  // Atau halaman utama lainnya
+      home: LoginPage(),  // Atau halaman utama lainnya
     );
   }
 }

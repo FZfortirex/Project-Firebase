@@ -1,6 +1,7 @@
 import 'package:firebase_app/CRUD/crud_page.dart';
 import 'package:firebase_app/login/auth_sign_in_up_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Import GetX
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -24,13 +25,11 @@ class _SignUpPageState extends State<SignUpPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Welcome, ${user.email}')),
         );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => CrudPage()),
-        );
+        // Menggunakan Get.to() untuk navigasi
+        Get.to(CrudPage());
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign-In Gagal')),
+          const SnackBar(content: Text('Sign-Up Gagal')),
         );
       }
     } catch (e) {
@@ -77,7 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () => _handleSignUp(context),
-                child: Text('Sign In'),
+                child: Text('Sign Up'),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: const Color.fromARGB(244, 251, 52, 52),
@@ -91,7 +90,8 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(height: 20),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  // Menggunakan Get.back() untuk kembali ke halaman sebelumnya
+                  Get.back();
                 },
                 child: Text('Already have an account? Sign in'),
               ),
