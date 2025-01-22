@@ -1,6 +1,7 @@
+import 'package:firebase_app/bindings/binding.dart';
 import 'package:firebase_app/login/login_page.dart';
-import 'package:firebase_app/CRUD/crud_page.dart';
 import 'package:firebase_app/notif/notification_service.dart';
+import 'package:firebase_app/profile/profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -43,7 +44,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: LoginPage(),  // Atau halaman utama lainnya
+      initialBinding: Binding(),  // Initialize Binding
+      home: LoginPage(),  // Default home page
+      routes: {
+        '/login': (context) => LoginPage(),  // Add other routes here
+      },
     );
   }
 }

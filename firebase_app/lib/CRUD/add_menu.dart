@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'crud_controller.dart';
+import '../controllers/crud_controller.dart';
 
 class AddMenuPage extends StatelessWidget {
   final CrudController controller = Get.put(CrudController());

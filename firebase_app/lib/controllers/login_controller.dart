@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:firebase_app/login/auth_sign_in_up_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthController extends GetxController {
+class LoginController extends GetxController {
   var isLoading = false.obs;
   var user = Rx<User?>(null);
 
@@ -53,7 +53,18 @@ class AuthController extends GetxController {
 
   // Sign out
   Future<void> signOut() async {
+  try {
+    // Start the sign-out process
     await AuthSignInUpService.signOut();
+    
+    // Clear the user data
     user.value = null;
+    
+    // Optionally, navigate the user back to the login page after sign-out
+    Get.offAllNamed('/login');  // Replaces the entire stack with Login Page
+  } catch (e) {
+    print('Error during sign-out: $e');
   }
+}
+
 }

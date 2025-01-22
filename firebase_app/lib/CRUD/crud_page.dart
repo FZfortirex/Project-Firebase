@@ -1,7 +1,8 @@
+import 'package:firebase_app/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'add_menu.dart';  // Import halaman AddMenuPage
-import 'crud_controller.dart';
+import 'add_menu.dart';  
+import '../controllers/crud_controller.dart'; 
 
 class CrudPage extends StatelessWidget {
   final CrudController controller = Get.put(CrudController());
@@ -22,6 +23,12 @@ class CrudPage extends StatelessWidget {
             bottom: Radius.circular(20),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person, color: Colors.white),
+            onPressed: () => Get.to(ProfilePage()), // Navigasi ke ProfilePage
+          ),
+        ],
       ),
       body: StreamBuilder(
         stream: controller.ordersCollection
