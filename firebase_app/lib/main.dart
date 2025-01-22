@@ -1,7 +1,8 @@
 import 'package:firebase_app/bindings/binding.dart';
+import 'package:firebase_app/controllers/login_controller.dart';
+import 'package:firebase_app/controllers/profile_controller.dart';
 import 'package:firebase_app/login/login_page.dart';
 import 'package:firebase_app/notif/notification_service.dart';
-import 'package:firebase_app/profile/profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -17,6 +18,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize Firebase for web or mobile
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: FirebaseOptions(
@@ -30,9 +32,22 @@ void main() async {
     await Firebase.initializeApp();
   }
 
+  // Handling Firebase messaging in the background
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  
+  // Initialize notification service
   final notificationService = NotificationService();
   await notificationService.initialize();
+
+  // Initialize controllers with GetX
+  final ProfileController profileController = Get.put(ProfileController());
+  Get.put(LoginController());
+
+  // Fetch user data after initializing the controller
+  if (profileController.user.value != null) {
+    profileController.fetchProfileData(profileController.user.value!.uid);
+  }
+
   runApp(MyApp());
 }
 
@@ -41,6 +56,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Restoran App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
