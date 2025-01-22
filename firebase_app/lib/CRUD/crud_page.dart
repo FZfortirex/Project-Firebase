@@ -1,272 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'add_menu.dart';  // Import halaman AddMenuPage
+import 'crud_controller.dart';
 
-class CrudPage extends StatefulWidget {
-  @override
-  _CrudPageState createState() => _CrudPageState();
-}
-
-class _CrudPageState extends State<CrudPage> {
-  final CollectionReference _ordersCollection =
-      FirebaseFirestore.instance.collection('orders');
-  final TextEditingController _menuController = TextEditingController();
-  List<Map<String, dynamic>> selectedMenuList = [];
-
-  // Function to delete an order
-  Future<void> _deleteOrder(String docId) async {
-    await _ordersCollection.doc(docId).delete();
-  }
-
-  // Function to show delete confirmation dialog
-  Future<void> _showDeleteConfirmation(
-      BuildContext context, String docId) async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Konfirmasi Hapus'),
-          content: Text('Apakah Anda yakin ingin menghapus pesanan ini?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Batal'),
-            ),
-            TextButton(
-              onPressed: () {
-                _deleteOrder(docId);
-                Navigator.pop(context);
-              },
-              child: Text('Hapus', style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Function to show the menu options (add/edit menu)
-  Future<void> _showMenuOptions(
-      BuildContext context, {Map<String, dynamic>? menuToEdit, int? index}) async {
-    final TextEditingController tableController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
-
-    if (menuToEdit != null) {
-      _menuController.text = menuToEdit['menu'];
-      descriptionController.text = menuToEdit['description'];
-    }
-
-    await showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              backgroundColor: Colors.white.withOpacity(0.95),
-              title: const Text(
-                'Pilih Menu Makanan',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 255, 67, 54),
-                  fontSize: 24,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              content: Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextField(
-                        controller: tableController,
-                        decoration: InputDecoration(
-                          labelText: 'Meja',
-                          labelStyle: TextStyle(color: Colors.red.shade700),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide:
-                                BorderSide(color: Colors.red.shade400),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide:
-                                BorderSide(color: Colors.red.shade700),
-                          ),
-                          filled: true,
-                          fillColor: Colors.red.shade50,
-                        ),
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: _menuController,
-                        decoration: InputDecoration(
-                          labelText: 'Menu',
-                          labelStyle: TextStyle(color: Colors.red.shade700),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide:
-                                BorderSide(color: Colors.red.shade200),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide:
-                                BorderSide(color: Colors.red.shade700),
-                          ),
-                          filled: true,
-                          fillColor: Colors.red.shade50,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: descriptionController,
-                        decoration: InputDecoration(
-                          labelText: 'Deskripsi',
-                          labelStyle: TextStyle(color: Colors.red.shade700),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide:
-                                BorderSide(color: Colors.red.shade200),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide:
-                                BorderSide(color: Colors.red.shade700),
-                          ),
-                          filled: true,
-                          fillColor: Colors.red.shade50,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_menuController.text.isNotEmpty &&
-                              descriptionController.text.isNotEmpty) {
-                            setState(() {
-                              if (menuToEdit == null) {
-                                selectedMenuList.add({
-                                  'menu': _menuController.text,
-                                  'description': descriptionController.text,
-                                });
-                              } else {
-                                selectedMenuList[index!] = {
-                                  'menu': _menuController.text,
-                                  'description': descriptionController.text,
-                                };
-                              }
-                              _menuController.clear();
-                              descriptionController.clear();
-                            });
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red.shade700,
-                        ),
-                        child: Text(
-                          menuToEdit == null ? 'Tambahkan Menu' : 'Perbarui Menu',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Menus yang dipilih:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red.shade700,
-                        ),
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height * 0.2,
-                        ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: selectedMenuList.map((item) {
-                              return Container(
-                                width: double.infinity,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        '${item['menu']} - ${item['description']}',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.delete,
-                                          color: Colors.red.shade700),
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedMenuList.remove(item);
-                                        });
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.edit,
-                                          color: Colors.red.shade700),
-                                      onPressed: () {
-                                        _showMenuOptions(
-                                          context,
-                                          menuToEdit: item,
-                                          index: selectedMenuList.indexOf(item),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    'Batal',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade700,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () async {
-                    if (tableController.text.isNotEmpty &&
-                        selectedMenuList.isNotEmpty) {
-                      await _ordersCollection.add({
-                        'table': tableController.text,
-                        'menuList': selectedMenuList,
-                        'createdAt': FieldValue.serverTimestamp(),
-                      });
-                      setState(() {
-                        _menuController.clear();
-                        selectedMenuList.clear();
-                      });
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: const Text('Simpan',
-                      style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+class CrudPage extends StatelessWidget {
+  final CrudController controller = Get.put(CrudController());
 
   @override
   Widget build(BuildContext context) {
@@ -285,16 +23,15 @@ class _CrudPageState extends State<CrudPage> {
           ),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _ordersCollection
+      body: StreamBuilder(
+        stream: controller.ordersCollection
             .orderBy('createdAt', descending: true)
             .snapshots(),
-        builder: (context, snapshot) {
+        builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(Colors.red.shade700),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.red.shade700),
               ),
             );
           }
@@ -323,68 +60,64 @@ class _CrudPageState extends State<CrudPage> {
             );
           }
 
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                final item = data[index];
-                final docId = item.id;
-                final table = item['table'];
-                final menuList = item['menuList'] as List;
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              final item = data[index];
+              final docId = item.id;
+              final table = item['table'];
+              final menuList = item['menuList'] as List;
 
-                return Card(
-                  elevation: 4,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  shape: RoundedRectangleBorder(
+              return Card(
+                elevation: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white,
+                        Colors.red.shade50,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.white,
-                          Colors.red.shade50,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(16),
+                    title: Text(
+                      'Meja: $table',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.red.shade900,
                       ),
-                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(16),
-                      title: Text(
-                        'Meja: $table',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.red.shade900,
-                        ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: menuList
-                            .map((menuItem) => Text(
-                                '${menuItem['menu']} - ${menuItem['description']}'))
-                            .toList(),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red.shade700),
-                        onPressed: () =>
-                            _showDeleteConfirmation(context, docId),
-                      ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: menuList
+                          .map((menuItem) => Text(
+                              '${menuItem['menu']} - ${menuItem['description']}'))
+                          .toList(),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red.shade700),
+                      onPressed: () => controller.deleteOrder(docId),
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           );
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.white,
-        onPressed: () => _showMenuOptions(context),
+        onPressed: () => Get.to(AddMenuPage()), // Navigasi ke AddMenuPage
         icon: Icon(Icons.add, color: Colors.red.shade700),
         label: Text(
           'Tambah Menu',

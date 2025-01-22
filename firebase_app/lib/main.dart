@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Handling pesan di background
@@ -37,11 +38,12 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CRUD Firebase',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: LoginPage(),
-      debugShowCheckedModeBanner: false,
+    return GetMaterialApp(
+      title: 'Restoran App',
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+      ),
+      home: CrudPage(),  // Atau halaman utama lainnya
     );
   }
 }
