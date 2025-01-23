@@ -44,7 +44,7 @@ class ProfilePage extends StatelessWidget {
                   radius: 50,
                   backgroundImage: controller.profileImageUrl.value.isNotEmpty
                       ? NetworkImage(controller.profileImageUrl.value)
-                      : const AssetImage('assets/default_profile.png')
+                      : const AssetImage('lib/assets/profile_picture.png')
                           as ImageProvider,
                   backgroundColor: Colors.grey.shade200,
                 ),
