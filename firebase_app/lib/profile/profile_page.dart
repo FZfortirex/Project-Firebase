@@ -19,12 +19,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    User ? user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profil Pengguna', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+        title: const Text(
+          'Profil Pengguna',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         backgroundColor: Colors.red.shade700,
         iconTheme: IconThemeData(color: Colors.white),
       ),
@@ -32,15 +34,6 @@ class _ProfilePageState extends State<ProfilePage> {
         if (controller.isLoading.value) {
           return Center(
             child: CircularProgressIndicator(),
-          );
-        }
-
-        if (controller.user.value == null) {
-          return Center(
-            child: Text(
-              'Tidak ada data pengguna',
-              style: TextStyle(fontSize: 16, color: Colors.red.shade700),
-            ),
           );
         }
 
@@ -53,28 +46,26 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CircleAvatar(
-              radius: 60,
-              backgroundColor: const Color(0xFF90CAF9), // Warna biru muda
-              child: user?.photoURL == null
-                  ? const Icon(
-                      Icons.person,
-                      size: 60,
-                      color: Colors.white,
-                    )
-                  : ClipOval(
-                      child: Image.network(
-                        user!.photoURL!,
-                        width: 120, // Atur lebar gambar
-                        height: 120, // Atur tinggi gambar
-                        fit: BoxFit.cover, // Agar gambar sesuai ukuran
-                      ),
-                    ),
-            ),
+                    radius: 60,
+                    backgroundColor: const Color(0xFF90CAF9), // Warna biru muda
+                    child: user?.photoURL == null
+                        ? const Icon(
+                            Icons.person,
+                            size: 60,
+                            color: Colors.white,
+                          )
+                        : ClipOval(
+                            child: Image.network(
+                              user!.photoURL!,
+                              width: 120, // Atur lebar gambar
+                              height: 120, // Atur tinggi gambar
+                              fit: BoxFit.cover, // Agar gambar sesuai ukuran
+                            ),
+                          ),
+                  ),
                   const SizedBox(height: 20),
                   Text(
-                    controller.email.value.isNotEmpty
-                        ? controller.email.value
-                        : 'Email tidak tersedia',
+                    user?.email ?? 'No Email',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,

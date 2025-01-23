@@ -28,7 +28,8 @@ class ProfileController extends GetxController {
   Future<void> fetchProfileData(String uid) async {
     isLoading(true);
     try {
-      DocumentSnapshot userData = await _firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userData =
+          await _firestore.collection('users').doc(uid).get();
 
       if (userData.exists) {
         email.value = userData.get('email') ?? 'Email tidak tersedia';
@@ -45,11 +46,10 @@ class ProfileController extends GetxController {
     }
   }
 
-
   Future<void> logout() async {
-      await AuthSignInUpService.signOut();
-      isLoading(true); 
-      isLoading.value = false;
-      Get.offAllNamed('/login');
+    await AuthSignInUpService.signOut();
+    isLoading(true);
+    isLoading.value = false;
+    Get.offAllNamed('/login');
   }
 }
