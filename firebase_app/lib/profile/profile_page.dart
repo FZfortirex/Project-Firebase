@@ -47,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   CircleAvatar(
                     radius: 60,
-                    backgroundColor: const Color(0xFF90CAF9), // Warna biru muda
+                    backgroundColor: const Color(0xFF90CAF9),
                     child: user?.photoURL == null
                         ? const Icon(
                             Icons.person,
@@ -57,9 +57,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         : ClipOval(
                             child: Image.network(
                               user!.photoURL!,
-                              width: 120, // Atur lebar gambar
-                              height: 120, // Atur tinggi gambar
-                              fit: BoxFit.cover, // Agar gambar sesuai ukuran
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
                             ),
                           ),
                   ),
