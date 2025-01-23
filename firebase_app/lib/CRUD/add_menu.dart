@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/crud_controller.dart';
+import '../model/menu_item_model.dart';
 
 class AddMenuPage extends StatelessWidget {
   final CrudController controller = Get.put(CrudController());
@@ -19,7 +20,6 @@ class AddMenuPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Title and instructions for better UX
               Text(
                 'Tambah Menu Restoran',
                 style: TextStyle(
@@ -37,32 +37,28 @@ class AddMenuPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              
-              // TextField for "Meja"
               _buildTextField(controller.tableController, 'Meja'),
               SizedBox(height: 20),
-
-              // TextField for "Menu"
               _buildTextField(controller.menuController, 'Menu'),
               SizedBox(height: 10),
-
-              // TextField for "Deskripsi"
               _buildTextField(controller.descriptionController, 'Deskripsi'),
               SizedBox(height: 30),
-
-              // Add Menu Button
               _buildActionButton('Tambah Menu', Colors.red.shade700, () {
                 controller.addMenu();
               }),
-
               SizedBox(height: 30),
-
-              // List of Menu Items (if any)
               Obx(() {
                 return controller.selectedMenuList.isEmpty
-                    ? Center(child: Text("Belum ada menu ditambahkan", style: TextStyle(fontSize: 16, color: Colors.grey.shade500)))
+                    ? Center(
+                        child: Text(
+                          "Belum ada menu ditambahkan",
+                          style: TextStyle(
+                              fontSize: 16, color: Colors.grey.shade500),
+                        ),
+                      )
                     : ListView.builder(
                         shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: controller.selectedMenuList.length,
                         itemBuilder: (context, index) {
                           final menuItem = controller.selectedMenuList[index];
@@ -70,13 +66,10 @@ class AddMenuPage extends StatelessWidget {
                         },
                       );
               }),
-
               SizedBox(height: 20),
-
-              // Save Order Button
               _buildActionButton('Simpan Pesanan', Colors.green.shade600, () {
                 controller.saveOrder();
-                Get.back(); // Kembali ke halaman sebelumnya
+                Get.back();
               }),
             ],
           ),
@@ -85,7 +78,6 @@ class AddMenuPage extends StatelessWidget {
     );
   }
 
-  // Custom TextField builder
   Widget _buildTextField(TextEditingController controller, String label) {
     return Container(
       decoration: BoxDecoration(
@@ -111,7 +103,6 @@ class AddMenuPage extends StatelessWidget {
     );
   }
 
-  // Custom button builder with animation effect
   Widget _buildActionButton(String label, Color color, VoidCallback onPressed) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
@@ -141,17 +132,16 @@ class AddMenuPage extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
         ),
       ),
     );
   }
 
-  // Build Menu Item Card
-  Widget _buildMenuCard(Map menuItem, int index) {
+  Widget _buildMenuCard(MenuItem menuItem, int index) {
     return GestureDetector(
       onTap: () {
-        // You could add a feature to view or edit the menu item when clicked
         controller.editMenu(index);
       },
       child: Card(
@@ -164,11 +154,14 @@ class AddMenuPage extends StatelessWidget {
         child: ListTile(
           contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
           title: Text(
-            menuItem['menu'],
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            menuItem.menu,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87),
           ),
           subtitle: Text(
-            menuItem['description'],
+            menuItem.description,
             style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
           ),
           trailing: Row(

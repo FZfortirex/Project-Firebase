@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app/model/menu_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_app/model/order_model.dart' as app;
 
 class CrudController extends GetxController {
   final CollectionReference ordersCollection =
@@ -9,9 +11,8 @@ class CrudController extends GetxController {
   final TextEditingController menuController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
-  RxList<Map<String, dynamic>> selectedMenuList = <Map<String, dynamic>>[].obs;
+  RxList<MenuItem> selectedMenuList = <MenuItem>[].obs;
 
-  // Menghapus pesanan berdasarkan docId
   Future<void> deleteOrder(String docId) async {
     try {
       await ordersCollection.doc(docId).delete();
@@ -20,45 +21,49 @@ class CrudController extends GetxController {
     }
   }
 
-  // Menghapus menu dari daftar
   void deleteMenu(int index) {
-    selectedMenuList.removeAt(index); // Hapus menu yang dipilih
+    selectedMenuList.removeAt(index);
   }
 
-  // Menambahkan menu ke dalam daftar selectedMenuList
   void addMenu() {
-    if (menuController.text.isNotEmpty && descriptionController.text.isNotEmpty) {
-      selectedMenuList.add({
-        'menu': menuController.text,
-        'description': descriptionController.text,
-      });
-      menuController.clear(); // Bersihkan input menu
-      descriptionController.clear(); // Bersihkan input deskripsi
+    if (menuController.text.isNotEmpty &&
+        descriptionController.text.isNotEmpty) {
+      selectedMenuList.add(
+        MenuItem(
+          menu: menuController.text,
+          description: descriptionController.text,
+        ),
+      );
+      menuController.clear();
+      descriptionController.clear();
     } else {
-      Get.snackbar("Input Error", "Menu dan Deskripsi tidak boleh kosong", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar("Input Error", "Menu dan Deskripsi tidak boleh kosong",
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
-  // Menyimpan pesanan ke Firestore
   Future<void> saveOrder() async {
     if (tableController.text.isNotEmpty && selectedMenuList.isNotEmpty) {
       try {
-        await ordersCollection.add({
-          'table': tableController.text,
-          'menuList': selectedMenuList,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-        clearFields(); // Bersihkan setelah menyimpan
-        Get.back(); // Kembali ke halaman sebelumnya setelah menyimpan
+        await ordersCollection.add(app.Order(
+          id: '',
+          table: tableController.text,
+          menuList: selectedMenuList.toList(),
+          createdAt: DateTime.now(),
+        ).toMap());
+
+        clearFields();
+        Get.back();
       } catch (e) {
-        Get.snackbar("Error", "Gagal menyimpan pesanan", snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar("Error", "Gagal menyimpan pesanan",
+            snackPosition: SnackPosition.BOTTOM);
       }
     } else {
-      Get.snackbar("Input Error", "Meja dan menu harus diisi", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar("Input Error", "Meja dan menu harus diisi",
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
-  // Menghapus semua inputan dan menu yang ada
   void clearFields() {
     tableController.clear();
     menuController.clear();
@@ -66,13 +71,11 @@ class CrudController extends GetxController {
     selectedMenuList.clear();
   }
 
-  // Mengedit menu yang ada
   void editMenu(int index) {
     final selectedMenu = selectedMenuList[index];
-    menuController.text = selectedMenu['menu'];
-    descriptionController.text = selectedMenu['description'];
+    menuController.text = selectedMenu.menu;
+    descriptionController.text = selectedMenu.description;
 
-    // Hapus menu yang ada sebelum menambahkan yang baru
     selectedMenuList.removeAt(index);
   }
 }
