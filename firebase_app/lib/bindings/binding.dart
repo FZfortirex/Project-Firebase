@@ -1,5 +1,5 @@
 import 'package:firebase_app/controllers/profile_controller.dart';
-import 'package:firebase_app/controllers/login_controller.dart';
+import 'package:firebase_app/controllers/auth_controller.dart';
 import 'package:get/get.dart';
 
 class Binding extends Bindings {
@@ -7,6 +7,6 @@ class Binding extends Bindings {
   void dependencies() {
     Get.lazyPut<ProfileController>(() => ProfileController());
 
-    Get.lazyPut<LoginController>(() => LoginController()); 
+    Get.lazyPut<AuthController>(() => AuthController()); 
   }
 }

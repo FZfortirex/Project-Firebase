@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app/controllers/auth_controller.dart';
 import 'package:firebase_app/login/auth_sign_in_up_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -50,6 +51,9 @@ class ProfileController extends GetxController {
     await AuthSignInUpService.signOut();
     isLoading(true);
     isLoading.value = false;
+    final AuthController authController = Get.find();
+    authController.emailController.clear();
+    authController.passwordController.clear();
     Get.offAllNamed('/login');
   }
 }
