@@ -1,3 +1,4 @@
+import 'package:firebase_app/CRUD/crud_page.dart';
 import 'package:firebase_app/bindings/binding.dart';
 import 'package:firebase_app/controllers/login_controller.dart';
 import 'package:firebase_app/controllers/profile_controller.dart';
@@ -9,8 +10,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// Handler untuk menerima pesan di background
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Handling pesan di background
   await Firebase.initializeApp();
   print('Pesan diterima di background: ${message.messageId}');
 }
@@ -18,36 +19,39 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase for web or mobile
+  // Inisialisasi Firebase berdasarkan platform
   if (kIsWeb) {
     await Firebase.initializeApp(
-        options: FirebaseOptions(
-            apiKey: "AIzaSyD6bGKBpGQZMQRw7sNAn3nn1Sdg5G4KUME",
-            authDomain: "fir-project-1bfc4.firebaseapp.com",
-            projectId: "fir-project-1bfc4",
-            storageBucket: "fir-project-1bfc4.firebasestorage.app",
-            messagingSenderId: "986512622672",
-            appId: "1:986512622672:web:735e2f9e36e9b10687fd55"));
+      options: FirebaseOptions(
+        apiKey: "AIzaSyD6bGKBpGQZMQRw7sNAn3nn1Sdg5G4KUME",
+        authDomain: "fir-project-1bfc4.firebaseapp.com",
+        projectId: "fir-project-1bfc4",
+        storageBucket: "fir-project-1bfc4.appspot.com", // Perbaiki URL storageBucket
+        messagingSenderId: "986512622672",
+        appId: "1:986512622672:web:735e2f9e36e9b10687fd55",
+      ),
+    );
   } else {
     await Firebase.initializeApp();
   }
 
-  // Handling Firebase messaging in the background
+  // Inisialisasi pesan di background
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  
-  // Initialize notification service
+
+  // Inisialisasi NotificationService
   final notificationService = NotificationService();
   await notificationService.initialize();
 
-  // Initialize controllers with GetX
-  final ProfileController profileController = Get.put(ProfileController());
+  // Menggunakan GetX untuk mengelola controller
   Get.put(LoginController());
+  final ProfileController profileController = Get.put(ProfileController());
 
-  // Fetch user data after initializing the controller
+  // Fetch data profil jika pengguna sudah login
   if (profileController.user.value != null) {
-    profileController.fetchProfileData(profileController.user.value!.uid);
+    await profileController.fetchProfileData(profileController.user.value!.uid);
   }
 
+  // Jalankan aplikasi
   runApp(MyApp());
 }
 
@@ -60,11 +64,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      initialBinding: Binding(),  // Initialize Binding
-      home: LoginPage(),  // Default home page
+      initialBinding: Binding(), // Binding awal
+      home: _getInitialPage(), // Halaman awal tergantung status login
       routes: {
-        '/login': (context) => LoginPage(),  // Add other routes here
+        '/login': (context) => LoginPage(),
+        // Tambahkan route lainnya jika diperlukan
       },
     );
+  }
+
+  Widget _getInitialPage() {
+    // Tentukan halaman awal berdasarkan status login
+    final ProfileController profileController = Get.find();
+    return profileController.user.value != null
+        ? CrudPage() // Jika sudah login, langsung ke CRUD page
+        : LoginPage(); // Jika belum login, tampilkan halaman login
   }
 }

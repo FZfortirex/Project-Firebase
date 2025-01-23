@@ -4,7 +4,12 @@ import 'package:get/get.dart';
 import 'add_menu.dart';  
 import '../controllers/crud_controller.dart'; 
 
-class CrudPage extends StatelessWidget {
+class CrudPage extends StatefulWidget {
+  @override
+  _CrudPageState createState() => _CrudPageState();
+}
+
+class _CrudPageState extends State<CrudPage> {
   final CrudController controller = Get.put(CrudController());
 
   @override
@@ -124,7 +129,7 @@ class CrudPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.white,
-        onPressed: () => Get.to(AddMenuPage()), // Navigasi ke AddMenuPage
+        onPressed: () => Get.to(() => AddMenuPage()), 
         icon: Icon(Icons.add, color: Colors.red.shade700),
         label: Text(
           'Tambah Menu',

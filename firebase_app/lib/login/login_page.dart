@@ -22,7 +22,6 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Welcome, ${user.displayName}')),
       );
-      // Navigasi ke CrudPage dan hapus semua halaman sebelumnya
       Get.offAll(() => CrudPage());
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

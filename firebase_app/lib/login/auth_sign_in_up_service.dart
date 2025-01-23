@@ -7,10 +7,14 @@ class AuthSignInUpService {
   static final GoogleSignIn _googleSignIn = GoogleSignIn();
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  /// Sign In with Google
   static Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null;
+      if (googleUser == null) {
+        print('Google sign-in aborted by user');
+        return null;
+      }
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
@@ -29,6 +33,7 @@ class AuthSignInUpService {
           'email': user.email ?? '',
           'createdAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
+        print('Google Sign-In successful: ${user.uid}');
       }
 
       return user;
@@ -38,11 +43,18 @@ class AuthSignInUpService {
     }
   }
 
+  /// Sign Out
   static Future<void> signOut() async {
-    await _auth.signOut();
-    await _googleSignIn.signOut();
+    try {
+      await _auth.signOut();
+      await _googleSignIn.signOut();
+      print('User signed out successfully');
+    } catch (e) {
+      print('Error during sign-out: $e');
+    }
   }
 
+  /// Sign In with Email
   static Future<User?> signInWithEmail(String email, String password) async {
     try {
       final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -52,18 +64,17 @@ class AuthSignInUpService {
       final User? user = userCredential.user;
 
       if (user != null) {
-        // Check if user exists in Firestore
         final DocumentSnapshot doc =
             await _firestore.collection('users').doc(user.uid).get();
 
         if (!doc.exists) {
-          // If user doesn't exist, create a new entry with default name
           await _firestore.collection('users').doc(user.uid).set({
             'email': email,
             'name': '-', // Default value for name
             'createdAt': FieldValue.serverTimestamp(),
           });
         }
+        print('Email Sign-In successful: ${user.uid}');
       }
 
       return user;
@@ -73,26 +84,28 @@ class AuthSignInUpService {
     }
   }
 
+  /// Sign Up with Email
   static Future<User?> signUpWithEmail(String email, String password) async {
-  try {
-    final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    final User? user = userCredential.user;
+    try {
+      final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final User? user = userCredential.user;
 
-    if (user != null) {
-      await _firestore.collection('users').doc(user.uid).set({
-        'email': email,
-        'name': '-', 
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).set({
+          'email': email,
+          'name': '-', 
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+        print('Email Sign-Up successful: ${user.uid}');
+      }
+
+      return user;
+    } catch (e) {
+      print('Error during Email Sign-Up: $e');
+      return null;
     }
-
-    return user;
-  } catch (e) {
-    print('Error during Email Sign-Up: $e');
-    return null;
   }
-}
 }

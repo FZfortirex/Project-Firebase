@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app/login/auth_sign_in_up_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
@@ -49,15 +50,9 @@ class ProfileController extends GetxController {
 
   // Logout function
   Future<void> logout() async {
-    try {
-      isLoading(true); // Set loading to true
-      await _auth.signOut(); // Sign out from Firebase
-      user.value = null; // Reset user data
-      Get.offAllNamed('/login'); // Navigate to login page
-    } catch (e) {
-      print("Error during logout: $e");
-    } finally {
-      isLoading(false); // Set loading to false
-    }
+      await AuthSignInUpService.signOut();
+      isLoading(true); 
+      isLoading.value = false;
+      Get.offAllNamed('/login');
   }
 }

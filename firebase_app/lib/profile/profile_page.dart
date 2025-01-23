@@ -2,12 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/profile_controller.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  late ProfileController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // Mengambil instance controller menggunakan GetX
+    controller = Get.find<ProfileController>();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Mengambil instance controller menggunakan GetX
-    final ProfileController controller = Get.find();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profil Pengguna'),
@@ -66,20 +77,20 @@ class ProfilePage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () => controller.logout(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade700, // Warna merah
+                    backgroundColor: Colors.red.shade700,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 15),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25), // Sudut melengkung
+                      borderRadius: BorderRadius.circular(25),
                     ),
-                    elevation: 5, // Efek bayangan
+                    elevation: 5,
                   ),
                   child: const Text(
                     'Log Out',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white, // Warna teks putih
+                      color: Colors.white,
                     ),
                   ),
                 ),
