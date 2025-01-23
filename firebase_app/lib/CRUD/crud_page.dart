@@ -1,5 +1,8 @@
+import 'package:firebase_app/profile/profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'add_menu.dart';  
+import '../controllers/crud_controller.dart'; 
 
 class CrudPage extends StatefulWidget {
   @override
@@ -7,174 +10,116 @@ class CrudPage extends StatefulWidget {
 }
 
 class _CrudPageState extends State<CrudPage> {
-  final CollectionReference _itemsCollection =
-      FirebaseFirestore.instance.collection('items');
-
-  // Fungsi untuk menampilkan dialog pilihan makanan
-  Future<void> _showMenuOptions(BuildContext context) async {
-    final List<Map<String, String>> _menuMakanan = [
-      {'title': 'Nasi Goreng', 'description': 'Nasi goreng dengan ayam dan sayuran.'},
-      {'title': 'Mie Goreng', 'description': 'Mie goreng pedas manis.'},
-      {'title': 'Sate Ayam', 'description': 'Sate ayam dengan bumbu kacang.'},
-      {'title': 'Bakso', 'description': 'Bakso daging sapi dengan kuah segar.'},
-      {'title': 'Ayam Bakar', 'description': 'Ayam bakar dengan sambal terasi.'},
-    ];
-
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text(
-            'Pilih Menu Makanan',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          content: SizedBox(
-            height: 300,
-            child: ListView.builder(
-              itemCount: _menuMakanan.length,
-              itemBuilder: (context, index) {
-                final menu = _menuMakanan[index];
-                return ListTile(
-                  title: Text(menu['title']!),
-                  subtitle: Text(menu['description']!),
-                  onTap: () async {
-                    // Tambahkan menu ke Firestore
-                    await _itemsCollection.add({
-                      'title': menu['title'],
-                      'description': menu['description'],
-                      'createdAt': FieldValue.serverTimestamp(),
-                    });
-                    Navigator.pop(context);
-                  },
-                );
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Fungsi Update
-  Future<void> _updateItem(
-      BuildContext context, String docId, String currentTitle, String currentDescription) async {
-    final TextEditingController titleController =
-        TextEditingController(text: currentTitle);
-    final TextEditingController descriptionController =
-        TextEditingController(text: currentDescription);
-
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Menu Makanan'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Nama Menu'),
-              ),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(labelText: 'Deskripsi'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
-            ),
-            TextButton(
-              onPressed: () async {
-                if (titleController.text.isNotEmpty &&
-                    descriptionController.text.isNotEmpty) {
-                  // Update data ke Firestore
-                  await _itemsCollection.doc(docId).update({
-                    'title': titleController.text,
-                    'description': descriptionController.text,
-                  });
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Simpan'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  final CrudController controller = Get.put(CrudController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange.shade100,
+      backgroundColor: Colors.red.shade50,
       appBar: AppBar(
-        title: const Text('Menu Restoran'),
-        backgroundColor: Colors.orange.shade700,
+        title: const Text(
+          'Menu Restoran',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: Colors.red.shade700,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person, color: Colors.white),
+            onPressed: () => Get.to(ProfilePage()), // Navigasi ke ProfilePage
+          ),
+        ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream:
-            _itemsCollection.orderBy('createdAt', descending: true).snapshots(),
-        builder: (context, snapshot) {
+      body: StreamBuilder(
+        stream: controller.ordersCollection
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
+        builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.red.shade700),
+              ),
+            );
           }
 
           if (snapshot.hasError) {
-            return const Center(child: Text('Error fetching data'));
+            return Center(
+              child: Text(
+                'Error fetching data',
+                style: TextStyle(color: Colors.red.shade700),
+              ),
+            );
           }
 
           final data = snapshot.data?.docs;
 
           if (data == null || data.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'Belum ada menu tersedia',
-                style: TextStyle(color: Colors.brown),
+                style: TextStyle(
+                  color: Colors.red.shade700,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             );
           }
 
           return ListView.builder(
+            padding: const EdgeInsets.all(16),
             itemCount: data.length,
             itemBuilder: (context, index) {
               final item = data[index];
               final docId = item.id;
-              final title = item['title'];
-              final description = item['description'];
+              final table = item['table'];
+              final menuList = item['menuList'] as List;
 
               return Card(
                 elevation: 4,
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                margin: const EdgeInsets.only(bottom: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                child: ListTile(
-                  title: Text(
-                    title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white,
+                        Colors.red.shade50,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  subtitle: Text(description),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () => _updateItem(context, docId, title, description),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(16),
+                    title: Text(
+                      'Meja: $table',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.red.shade900,
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _itemsCollection.doc(docId).delete(),
-                      ),
-                    ],
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: menuList
+                          .map((menuItem) => Text(
+                              '${menuItem['menu']} - ${menuItem['description']}'))
+                          .toList(),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red.shade700),
+                      onPressed: () => controller.deleteOrder(docId),
+                    ),
                   ),
                 ),
               );
@@ -182,10 +127,14 @@ class _CrudPageState extends State<CrudPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.orange,
-        onPressed: () => _showMenuOptions(context),
-        child: const Icon(Icons.add),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.white,
+        onPressed: () => Get.to(() => AddMenuPage()), 
+        icon: Icon(Icons.add, color: Colors.red.shade700),
+        label: Text(
+          'Tambah Menu',
+          style: TextStyle(color: Colors.red.shade700),
+        ),
       ),
     );
   }
