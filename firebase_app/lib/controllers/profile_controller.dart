@@ -7,19 +7,17 @@ class ProfileController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Observables for user profile data and loading state
   Rx<User?> user = Rx<User?>(null);
   RxString email = 'Email tidak tersedia'.obs;
   RxString profileImageUrl = ''.obs;
-  RxBool isLoading = false.obs; // Loading state
+  RxBool isLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // Get the current logged-in user
+
     user.value = _auth.currentUser;
 
-    // If user is logged in, fetch profile data
     if (user.value != null) {
       fetchProfileData(user.value!.uid);
     } else {
@@ -27,28 +25,27 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Fetch user profile data from Firestore
   Future<void> fetchProfileData(String uid) async {
-    isLoading(true); // Set loading to true
+    isLoading(true);
     try {
-      // Fetch the user document from Firestore based on UID
       DocumentSnapshot userData = await _firestore.collection('users').doc(uid).get();
 
       if (userData.exists) {
-        // Update profile data if user document exists
         email.value = userData.get('email') ?? 'Email tidak tersedia';
-        profileImageUrl.value = userData.get('profileImageUrl') ?? '';
+
+        print("Email: ${email.value}");
+        print("Profile Image URL: ${profileImageUrl.value}");
       } else {
         print("User document does not exist.");
       }
     } catch (e) {
       print("Error fetching user data: $e");
     } finally {
-      isLoading(false); // Set loading to false
+      isLoading(false);
     }
   }
 
-  // Logout function
+
   Future<void> logout() async {
       await AuthSignInUpService.signOut();
       isLoading(true); 

@@ -27,6 +27,7 @@ class AuthSignInUpService {
       final User? user = userCredential.user;
 
       if (user != null) {
+        // Simpan profileImageUrl dan data lainnya ke Firestore
         await _firestore.collection('users').doc(user.uid).set({
           'uid': user.uid,
           'name': user.displayName ?? 'Anonymous',
@@ -42,6 +43,7 @@ class AuthSignInUpService {
       return null;
     }
   }
+
 
   /// Sign Out
   static Future<void> signOut() async {
