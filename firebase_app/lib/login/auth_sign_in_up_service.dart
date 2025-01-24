@@ -27,7 +27,6 @@ class AuthSignInUpService {
       final User? user = userCredential.user;
 
       if (user != null) {
-        // Simpan profileImageUrl dan data lainnya ke Firestore
         await _firestore.collection('users').doc(user.uid).set({
           'uid': user.uid,
           'name': user.displayName ?? 'Anonymous',
@@ -72,7 +71,7 @@ class AuthSignInUpService {
         if (!doc.exists) {
           await _firestore.collection('users').doc(user.uid).set({
             'email': email,
-            'name': '-', // Default value for name
+            'name': '-', 
             'createdAt': FieldValue.serverTimestamp(),
           });
         }

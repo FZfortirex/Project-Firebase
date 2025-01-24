@@ -7,7 +7,6 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
-    // Minta izin notifikasi untuk iOS
     await _messaging.requestPermission(
       alert: true,
       badge: true,
