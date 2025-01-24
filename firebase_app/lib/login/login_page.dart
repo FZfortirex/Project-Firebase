@@ -1,8 +1,9 @@
-import 'package:firebase_app/CRUD/crud_page.dart';
+import 'package:firebase_app/controllers/auth_controller.dart';
 import 'package:firebase_app/login/sign_up_page.dart';
+import 'package:firebase_app/widgets/my_textfield.dart';
+import 'package:firebase_app/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'auth_sign_in_up_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,47 +13,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  void _handleGoogleSignIn(BuildContext context) async {
-    final user = await AuthSignInUpService.signInWithGoogle();
-
-    if (user != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Welcome, ${user.displayName}')),
-      );
-      Get.offAll(() => CrudPage());
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sign-In Gagal')),
-      );
-    }
-  }
-
-  void _handleEmailSignIn(BuildContext context) async {
-    try {
-      final user = await AuthSignInUpService.signInWithEmail(
-        _emailController.text,
-        _passwordController.text,
-      );
-
-      if (user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Welcome, ${user.email}')),
-        );
-        Get.offAll(() => CrudPage());
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign-In Gagal')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }
+  final AuthController authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -71,40 +32,26 @@ class _LoginPageState extends State<LoginPage> {
                     width: 200,
                     height: 200,
                   ),
-                  TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(40)),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
+                  CustomTextField(
+                    controller: authController.emailController,
+                    labelText: 'Email',
                   ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                    ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  CustomTextField(
+                    controller: authController.passwordController,
+                    labelText: 'Password',
                     obscureText: true,
                   ),
                   SizedBox(height: 40),
-                  ElevatedButton(
-                    onPressed: () => _handleEmailSignIn(context),
-                    child: Text('Sign In'),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: const Color.fromARGB(244, 251, 52, 52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      fixedSize: Size(250, 50),
-                    ),
+                  MyButton(
+                    buttonText: 'Sign In',
+                    backgroundColor: const Color.fromARGB(244, 251, 52, 52),
+                    foregroundColor: Colors.white,
+                    onPressed: () => authController.handleEmailSignIn(context),
+                    width: 250,
+                    height: 50,
                   ),
                   SizedBox(
                     height: 25,
@@ -140,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                       shape: CircleBorder(),
                       padding: EdgeInsets.all(20),
                     ),
-                    onPressed: () => _handleGoogleSignIn(context),
+                    onPressed: () => authController.handleGoogleSignIn(context),
                     child: ClipOval(
                       child: Image.network(
                         'https://www.pngall.com/wp-content/uploads/13/Google-Logo.png',
@@ -157,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.only(bottom: 20.0),
               child: TextButton(
                 onPressed: () {
-                  // Navigasi ke SignUpPage
                   Get.to(SignUpPage());
                 },
                 style: TextButton.styleFrom(
