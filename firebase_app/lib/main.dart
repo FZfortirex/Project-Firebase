@@ -1,6 +1,6 @@
 import 'package:firebase_app/CRUD/crud_page.dart';
 import 'package:firebase_app/bindings/binding.dart';
-import 'package:firebase_app/controllers/login_controller.dart';
+import 'package:firebase_app/controllers/auth_controller.dart';
 import 'package:firebase_app/controllers/profile_controller.dart';
 import 'package:firebase_app/login/login_page.dart';
 import 'package:firebase_app/notif/notification_service.dart';
@@ -43,7 +43,7 @@ void main() async {
   await notificationService.initialize();
 
   // Menggunakan GetX untuk mengelola controller
-  Get.put(LoginController());
+  Get.put(AuthController());
   final ProfileController profileController = Get.put(ProfileController());
 
   // Fetch data profil jika pengguna sudah login

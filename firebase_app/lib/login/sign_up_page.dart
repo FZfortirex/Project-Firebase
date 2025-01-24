@@ -1,46 +1,16 @@
-import 'package:firebase_app/CRUD/crud_page.dart';
-import 'package:firebase_app/login/auth_sign_in_up_service.dart';
+import 'package:firebase_app/controllers/auth_controller.dart';
+import 'package:firebase_app/widgets/login_textfield.dart';
+import 'package:firebase_app/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Import GetX
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends StatelessWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
-}
-
-class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  void _handleSignUp(BuildContext context) async {
-    try {
-      final user = await AuthSignInUpService.signUpWithEmail(
-        _emailController.text,
-        _passwordController.text,
-      );
-
-      if (user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Welcome, ${user.email}')),
-        );
-        // Menggunakan Get.to() untuk navigasi
-        Get.to(CrudPage());
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign-Up Gagal')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.put(AuthController());
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -52,48 +22,38 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                ),
+              CustomTextField(
+                controller: authController.emailController,
+                labelText: 'Email',
                 keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(height: 10),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                ),
+              CustomTextField(
+                controller: authController.passwordController,
+                labelText: 'Password',
                 obscureText: true,
               ),
               SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () => _handleSignUp(context),
-                child: Text('Sign Up'),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: const Color.fromARGB(244, 251, 52, 52),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  fixedSize: Size(250, 50),
-                ),
+              MyButton(
+                buttonText: 'Register',
+                backgroundColor: const Color.fromARGB(244, 251, 52, 52),
+                foregroundColor: Colors.white,
+                onPressed: () => authController.handleSignUp(context),
+                width: 250,
+                height: 50,
               ),
               SizedBox(height: 20),
               TextButton(
                 onPressed: () {
-                  // Menggunakan Get.back() untuk kembali ke halaman sebelumnya
                   Get.back();
                 },
-                child: Text('Already have an account? Sign in'),
+                child: Text(
+                  'Already have an account? Sign in',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
               ),
             ],
           ),
