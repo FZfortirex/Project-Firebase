@@ -12,8 +12,9 @@ class AddMenuPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tambah Menu'),
+        title: const Text('Tambah Menu', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
         backgroundColor: Colors.red.shade700,
+        iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
       ),
       body: Padding(
