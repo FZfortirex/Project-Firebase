@@ -1,8 +1,9 @@
 import 'package:firebase_app/profile/profile_page.dart';
+import 'package:firebase_app/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'add_menu.dart';  
-import '../controllers/crud_controller.dart'; 
+import 'add_menu.dart';
+import '../controllers/crud_controller.dart';
 
 class CrudPage extends StatefulWidget {
   @override
@@ -127,13 +128,15 @@ class _CrudPageState extends State<CrudPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.white,
-        onPressed: () => Get.to(() => AddMenuPage()), 
-        icon: Icon(Icons.add, color: Colors.red.shade700),
-        label: Text(
-          'Tambah Menu',
-          style: TextStyle(color: Colors.red.shade700),
+      bottomNavigationBar: Container(
+        margin: EdgeInsets.only(bottom: 20),
+        child: MyButton(
+          buttonText: 'Tambah Menu',
+          backgroundColor: Colors.red.shade700,
+          foregroundColor: Colors.white,
+          onPressed: () => Get.to(() => AddMenuPage()),
+          width: double.infinity,
+          height: 50,
         ),
       ),
     );
