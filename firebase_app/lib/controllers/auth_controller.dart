@@ -16,7 +16,7 @@ class AuthController extends GetxController {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Welcome, ${user.displayName}')),
       );
-      Get.offAll(() => CrudPage());
+        Get.offAllNamed('/crudPage');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Sign-In Gagal')),
@@ -36,7 +36,7 @@ class AuthController extends GetxController {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Welcome, ${user.email}')),
         );
-        Get.offAll(() => CrudPage());
+        Get.offAllNamed('/crudPage');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Sign-In Gagal')),
@@ -61,7 +61,7 @@ class AuthController extends GetxController {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Welcome, ${user.email}')),
         );
-        Get.to(CrudPage());
+        Get.offAllNamed('/crudPage');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Sign-Up Gagal')),

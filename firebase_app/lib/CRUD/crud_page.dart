@@ -32,7 +32,7 @@ class _CrudPageState extends State<CrudPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.person, color: Colors.white),
-            onPressed: () => Get.to(ProfilePage()), // Navigasi ke ProfilePage
+            onPressed: () => Get.toNamed('/profilePage'), 
           ),
         ],
       ),
@@ -134,7 +134,7 @@ class _CrudPageState extends State<CrudPage> {
           buttonText: 'Tambah Menu',
           backgroundColor: Colors.red.shade700,
           foregroundColor: Colors.white,
-          onPressed: () => Get.to(() => AddMenuPage()),
+          onPressed: () => Get.toNamed  ('/addMenuPage'),
           width: double.infinity,
           height: 50,
         ),

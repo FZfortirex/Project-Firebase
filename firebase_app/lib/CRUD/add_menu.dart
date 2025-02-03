@@ -92,7 +92,7 @@ class AddMenuPage extends StatelessWidget {
                 foregroundColor: Colors.white,
                 onPressed: () {
                   controller.saveOrder();
-                  Get.back();
+                  Get.toNamed('/crudPage');
                 },
                 width: double.infinity,
                 height: 50,

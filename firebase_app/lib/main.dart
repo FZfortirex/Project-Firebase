@@ -4,8 +4,11 @@ import 'package:firebase_app/controllers/auth_controller.dart';
 import 'package:firebase_app/controllers/profile_controller.dart';
 import 'package:firebase_app/login/login_page.dart';
 import 'package:firebase_app/notif/notification_service.dart';
+import 'package:firebase_app/profile/profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'CRUD/add_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -61,6 +64,9 @@ class MyApp extends StatelessWidget {
       home: _getInitialPage(),
       routes: {
         '/login': (context) => LoginPage(),
+        '/crudPage' : (context) => CrudPage(),
+        '/addMenuPage' : (context) => AddMenuPage(),
+        '/profilePage' : (context) => ProfilePage(),
       },
     );
   }

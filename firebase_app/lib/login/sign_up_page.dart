@@ -1,5 +1,5 @@
 import 'package:firebase_app/controllers/auth_controller.dart';
-import 'package:firebase_app/widgets/login_textfield.dart';
+import 'package:firebase_app/widgets/my_textfield.dart';
 import 'package:firebase_app/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
